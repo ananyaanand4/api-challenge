@@ -1,12 +1,12 @@
 import { Router, Request, Response } from "express";
 import { StatusCode } from "status-code-enum";
 import { isValidDecodeFormat } from "./hack-formats";
+import Config from "../../config";
+const { SECRET, IV } = Config;
 
 const hackRouter = Router();
 
 let crypto = require('crypto');
-let secret = '1234567890abcdef1234567890abcdef';
-let iv = '1234567890abcdef';
 
 /**
  * @api {post} /hack/encode/ POST /hack/encode/
@@ -38,7 +38,7 @@ let iv = '1234567890abcdef';
     //encoding userInfo json and getting hash string
     const userInfoStr = JSON.stringify(userInfo);
 
-    const cipher = crypto.createCipheriv('aes-256-cbc', secret, iv);
+    const cipher = crypto.createCipheriv('aes-256-cbc', SECRET, IV);
     let hashToken = cipher.update(userInfoStr, 'utf-8', 'hex');
     hashToken += cipher.final('hex');
 
@@ -77,7 +77,7 @@ let iv = '1234567890abcdef';
         return res.status(400).send({ error: "input is in wrong format" });
     }
 
-    const decipher = crypto.createDecipheriv('aes-256-cbc', secret, iv);
+    const decipher = crypto.createDecipheriv('aes-256-cbc', SECRET, IV);
     let userStr = decipher.update(token, 'hex', 'utf-8');
     userStr += decipher.final('utf-8');
 

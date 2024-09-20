@@ -149,6 +149,9 @@ const Config = {
     MAX_SHOP_STOCK_PER_ITEM: 128,
 
     RANKING_OFFSET: 1,
+
+    SECRET: '1234567890abcdef1234567890abcdef',
+    IV: '1234567890abcdef',
 };
 
 export default Config;
