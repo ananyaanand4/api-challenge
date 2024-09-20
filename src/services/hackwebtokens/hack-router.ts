@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { StatusCode } from "status-code-enum";
-import { isValidEncodeFormat } from "./hack-formats";
+import { isValidDecodeFormat } from "./hack-formats";
 
 const hackRouter = Router();
 
@@ -37,9 +37,6 @@ let iv = '1234567890abcdef';
 
     //encoding userInfo json and getting hash string
     const userInfoStr = JSON.stringify(userInfo);
-    if (!isValidEncodeFormat(userInfoStr)) {
-
-    }
 
     const cipher = crypto.createCipheriv('aes-256-cbc', secret, iv);
     let hashToken = cipher.update(userInfoStr, 'utf-8', 'hex');
@@ -67,6 +64,7 @@ let iv = '1234567890abcdef';
  * 
  * @apiUse strongVerifyErrors
  * @apiError (CODE: 400) {String} MissingParam token info is not passed to api endpoint
+ * @apiError (CODE: 400) {String} WrongInput input is in wrong format
  */
  hackRouter.post("/decode/",  async (req: Request, res: Response) => {
     const tokenInfo = req.body;
@@ -74,6 +72,9 @@ let iv = '1234567890abcdef';
 
     if (!tokenInfo) {
         return res.status(400).send({ error: "token info parameter is undefined" });
+    }
+    if (!isValidDecodeFormat(tokenInfo)) {
+        return res.status(400).send({ error: "input is in wrong format" });
     }
 
     const decipher = crypto.createDecipheriv('aes-256-cbc', secret, iv);

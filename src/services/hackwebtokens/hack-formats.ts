@@ -1,9 +1,9 @@
-export function isValidEncodeFormat(profile: string): boolean {
-    const userJson = JSON.parse(profile);
+export function isValidDecodeFormat(profile: object): boolean {
     try {
-        const profile = JSON.parse(userJson);
         return (
-            typeof profile.user === 'string'
+            typeof profile === 'object' &&
+            profile !== null &&
+            typeof (profile as any).token === 'string'
         );
     } catch (error) {
         return false;
